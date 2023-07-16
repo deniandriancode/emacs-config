@@ -1,4 +1,4 @@
-(add-to-list 'load-path "~/.emacs.d/lisp")
+(add-to-list 'load-path "~/.emacs.d/lisp/")
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -15,9 +15,11 @@
 (setq package-selected-packages
       '(neotree
 		all-the-icons
+		all-the-icons-dired
 		emmet-mode
 		vterm
 		counsel
+		markdown-mode
 		company
 		which-key
 		doom-themes
@@ -26,13 +28,13 @@
 		org-modern
 		key-chord
 		vertico
+		restart-emacs
 		tree-sitter
 		tree-sitter-langs))
 
 (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
 (add-hook 'html-mode-hook 'emmet-mode)
 (add-hook 'css-mode-hook  'emmet-mode)
-
 
 (defun company-predictive (command &optional arg &rest ignored)
   (case command
@@ -46,11 +48,11 @@
 
 (defun scroll-up-half ()
   (interactive)
-  (scroll-up (window-half-height)))
+  (evil-next-line (window-half-height)))
 
 (defun scroll-down-half ()
   (interactive)
-  (scroll-down (window-half-height)))
+  (evil-previous-line (window-half-height)))
 
 (add-hook 'after-init-hook 'global-company-mode)
 (setq company-minimum-prefix-length 1)
@@ -64,6 +66,11 @@
 
 (set-default 'truncate-lines t)
 
+;; ============ transparency
+(set-frame-parameter (selected-frame) 'alpha '(97 . 97))
+(add-to-list 'default-frame-alist '(alpha . (97 . 97)))
+
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
 (setq neo-window-fixed-size nil)
 
@@ -73,21 +80,21 @@
 
 (vertico-mode 1)
 
-;; ============ Org Mode
+;; ============ org mode
 (setq
- ;; Edit settings
+ ;; edit settings
  org-auto-align-tags nil
  org-tags-column 0
  org-catch-invisible-edits 'show-and-error
  org-special-ctrl-a/e t
  org-insert-heading-respect-content t
 
- ;; Org styling, hide markup etc.
+ ;; org styling, hide markup etc.
  org-hide-emphasis-markers t
  org-pretty-entities t
  org-ellipsis "…"
 
- ;; Agenda styling
+ ;; agenda styling
  org-agenda-tags-column 0
  org-agenda-block-separator ?─
  org-agenda-time-grid
@@ -98,14 +105,14 @@
  "⭠ now ─────────────────────────────────────────────────")
 (with-eval-after-load 'org (global-org-modern-mode))
 
-;; ============ Indentation
+;; ============ indentation
 (setq-default tab-width 4) ; or any other preferred value
 (defvaralias 'c-basic-offset 'tab-width)
 (defvaralias 'cperl-indent-level 'tab-width)
 
-;; ============ Default Ivy Config; DON'T TOUCH!
+;; ============ default ivy config; don't touch!
 (global-set-key (kbd "C-s") 'swiper-isearch)
-(global-set-key (kbd "C-c M-x") 'counsel-M-x)
+(global-set-key (kbd "C-c M-x") 'counsel-m-x)
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
 (global-set-key (kbd "M-y") 'counsel-yank-pop)
 (global-set-key (kbd "<f1> f") 'counsel-describe-function)
@@ -116,18 +123,18 @@
 (global-set-key (kbd "<f2> j") 'counsel-set-variable)
 (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
 (global-set-key (kbd "C-c v") 'ivy-push-view)
-(global-set-key (kbd "C-c V") 'ivy-pop-view)
+(global-set-key (kbd "C-c v") 'ivy-pop-view)
 
 (global-set-key (kbd "C-c c") 'counsel-compile)
 (global-set-key (kbd "C-c g") 'counsel-git)
 (global-set-key (kbd "C-c j") 'counsel-git-grep)
-(global-set-key (kbd "C-c L") 'counsel-git-log)
+(global-set-key (kbd "C-c l") 'counsel-git-log)
 (global-set-key (kbd "C-c k") 'counsel-rg)
 (global-set-key (kbd "C-c m") 'counsel-linux-app)
 (global-set-key (kbd "C-c n") 'counsel-fzf)
 (global-set-key (kbd "C-x l") 'counsel-locate)
-(global-set-key (kbd "C-c J") 'counsel-file-jump)
-(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+(global-set-key (kbd "C-c j") 'counsel-file-jump)
+(global-set-key (kbd "C-s-o") 'counsel-rhythmbox)
 (global-set-key (kbd "C-c w") 'counsel-wmctrl)
 
 (global-set-key (kbd "C-c C-r") 'ivy-resume)
@@ -136,13 +143,13 @@
 (global-set-key (kbd "C-c g") 'counsel-git)
 (global-set-key (kbd "C-c o") 'counsel-outline)
 (global-set-key (kbd "C-c t") 'counsel-load-theme)
-(global-set-key (kbd "C-c F") 'counsel-org-file)
+(global-set-key (kbd "C-c f") 'counsel-org-file)
 
-;; ============ Disable startup screen
+;; ============ disable startup screen
 (setq inhibit-startup-message t) 
 (setq initial-scratch-message nil)
 
-;; ============ Key Binding
+;; ============ key binding
 (global-set-key (kbd "C-c \$") 'toggle-truncate-lines)
 (global-set-key (kbd "C-c f") 'neotree-toggle)
 (global-set-key (kbd "C-c i") 'ivy-mode)
@@ -150,13 +157,42 @@
 (key-chord-mode 1)
 (evil-mode 1)
 
+(setq evil-emacs-state-cursor '("orange" box))
+(setq evil-normal-state-cursor '(box "SteelBlue2")
+      evil-insert-state-cursor '(bar "SteelBlue2")
+      evil-visual-state-cursor '(box "orange"))
+
 (define-key evil-normal-state-map (kbd "C-r") 'undo-redo)
 (define-key evil-normal-state-map (kbd "C-d") 'scroll-up-half)
 (define-key evil-normal-state-map (kbd "C-u") 'scroll-down-half)
+(define-key evil-visual-state-map ">" (lambda ()
+    (interactive)
+    ; ensure mark is less than point
+    (when (> (mark) (point)) 
+        (exchange-point-and-mark)
+    )
+    (evil-normal-state)
+    (evil-shift-right (mark) (point))
+    (evil-visual-restore) ; re-select last visual-mode selection
+))
+
+(define-key evil-visual-state-map "<" (lambda ()
+    (interactive)
+    ; ensure mark is less than point
+    (when (> (mark) (point)) 
+        (exchange-point-and-mark)
+    )
+    (evil-normal-state)
+    (evil-shift-left (mark) (point))
+    (evil-visual-restore) ; re-select last visual-mode selection
+))
 (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
 
-(global-set-key [next] 'scroll-down-half)
-(global-set-key [prior] 'scroll-up-half)
+(global-set-key [next] 'scroll-up-half)
+(global-set-key [prior] 'scroll-down-half)
+
+;; ============ jsp
+(add-to-list 'auto-mode-alist '("\\.jsp\\'" . html-mode))
 
 ;; ============ Tree Sitter
 (global-tree-sitter-mode)
@@ -189,4 +225,3 @@
  ;; If there is more than one, they won't work right.
  )
 (put 'scroll-left 'disabled nil)
-
