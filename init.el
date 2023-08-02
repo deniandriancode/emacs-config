@@ -17,23 +17,35 @@
 		all-the-icons
 		all-the-icons-dired
 		emmet-mode
+		lua-mode
+		lsp-mode
 		vterm
 		counsel
 		markdown-mode
+		typescript-mode
 		company
 		which-key
+		atom-one-dark-theme
+		spacemacs-theme
 		doom-themes
 		doom-modeline
+		angular-mode
+		svelte-mode
+		slime
 		evil
 		org-modern
 		key-chord
 		vertico
 		restart-emacs
+		centaur-tabs
 		tree-sitter
-		tree-sitter-langs))
+		tree-sitter-langs
+		lsp-java))
+
 
 (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
 (add-hook 'html-mode-hook 'emmet-mode)
+(add-hook 'xml-mode-hook 'emmet-mode)
 (add-hook 'css-mode-hook  'emmet-mode)
 
 (defun company-predictive (command &optional arg &rest ignored)
@@ -48,16 +60,16 @@
 
 (defun scroll-up-half ()
   (interactive)
-  (evil-next-line (window-half-height)))
+  (next-line (window-half-height)))
 
 (defun scroll-down-half ()
   (interactive)
-  (evil-previous-line (window-half-height)))
+  (previous-line (window-half-height)))
 
 (add-hook 'after-init-hook 'global-company-mode)
 (setq company-minimum-prefix-length 1)
 
-(ivy-mode 1)
+;; (ivy-mode 1)
 (setq ivy-use-virtual-buffers t)
 (setq ivy-count-format "(%d/%d) ")
 
@@ -154,45 +166,67 @@
 (global-set-key (kbd "C-c f") 'neotree-toggle)
 (global-set-key (kbd "C-c i") 'ivy-mode)
 
+;; ============ centaur tabs
+(require 'centaur-tabs)
+(centaur-tabs-mode t)
+(global-set-key (kbd "C-<prior>")  'centaur-tabs-backward)
+(global-set-key (kbd "C-<next>") 'centaur-tabs-forward)
+(centaur-tabs-headline-match)
+(setq centaur-tabs-style "bar")
+(setq centaur-tabs-set-icons t)
+(setq centaur-tabs-set-modified-marker t)
+(setq centaur-tabs-show-navigation-buttons t)
+(setq centaur-tabs-set-bar 'left)
+;; (setq x-underline-at-descent-line t)
+
 (key-chord-mode 1)
-(evil-mode 1)
+;; (evil-mode 1)
 
-(setq evil-emacs-state-cursor '("orange" box))
-(setq evil-normal-state-cursor '(box "SteelBlue2")
-      evil-insert-state-cursor '(bar "SteelBlue2")
-      evil-visual-state-cursor '(box "orange"))
+;; (setq evil-emacs-state-cursor '("orange" box))
+;; (setq evil-normal-state-cursor '(box "SteelBlue2")
+      ;; evil-insert-state-cursor '(bar "SteelBlue2")
+      ;; evil-visual-state-cursor '(box "orange"))
 
-(define-key evil-normal-state-map (kbd "C-r") 'undo-redo)
-(define-key evil-normal-state-map (kbd "C-d") 'scroll-up-half)
-(define-key evil-normal-state-map (kbd "C-u") 'scroll-down-half)
-(define-key evil-visual-state-map ">" (lambda ()
-    (interactive)
-    ; ensure mark is less than point
-    (when (> (mark) (point)) 
-        (exchange-point-and-mark)
-    )
-    (evil-normal-state)
-    (evil-shift-right (mark) (point))
-    (evil-visual-restore) ; re-select last visual-mode selection
-))
+;; (define-key evil-normal-state-map (kbd "C-r") 'undo-redo)
+;; (define-key evil-normal-state-map (kbd "C-d") 'scroll-up-half)
+;; (define-key evil-normal-state-map (kbd "C-u") 'scroll-down-half)
+;; (define-key evil-visual-state-map ">" (lambda ()
+;;     (interactive)
+;;     ; ensure mark is less than point
+;;     (when (> (mark) (point)) 
+;;         (exchange-point-and-mark)
+;;     )
+;;     (evil-normal-state)
+;;     (evil-shift-right (mark) (point))
+;;     (evil-visual-restore) ; re-select last visual-mode selection
+;; ))
 
-(define-key evil-visual-state-map "<" (lambda ()
-    (interactive)
-    ; ensure mark is less than point
-    (when (> (mark) (point)) 
-        (exchange-point-and-mark)
-    )
-    (evil-normal-state)
-    (evil-shift-left (mark) (point))
-    (evil-visual-restore) ; re-select last visual-mode selection
-))
-(key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+;; (define-key evil-visual-state-map "<" (lambda ()
+;;     (interactive)
+;;     ; ensure mark is less than point
+;;     (when (> (mark) (point)) 
+;;         (exchange-point-and-mark)
+;;     )
+;;     (evil-normal-state)
+;;     (evil-shift-left (mark) (point))
+;;     (evil-visual-restore) ; re-select last visual-mode selection
+;; ))
+;; ;; (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
 
 (global-set-key [next] 'scroll-up-half)
 (global-set-key [prior] 'scroll-down-half)
 
 ;; ============ jsp
 (add-to-list 'auto-mode-alist '("\\.jsp\\'" . html-mode))
+(add-to-list 'auto-mode-alist '("\\.cl\\'" . common-lisp-mode))
+
+;; ============ LSP
+(require 'lsp-mode)
+
+(add-hook 'lsp-mode-hook #'lsp-headerline-breadcrumb-mode)
+
+(require 'lsp-java)
+(add-hook 'java-mode-hook #'lsp)
 
 ;; ============ Tree Sitter
 (global-tree-sitter-mode)
@@ -201,12 +235,12 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (global-hl-line-mode 1)
-(global-linum-mode 1)
-(setq linum-format " %d ")
+;; (global-linum-mode 1)
+;; (setq linum-format " %d ")
 ;; (setq linum-format " %d \u2502")
 
-;; (global-display-line-numbers-mode 1)
-;; (setq display-line-numbers-type 'relative)
+(global-display-line-numbers-mode 1)
+(setq display-line-numbers-type 'relative)
 
 ;; ============== Custom Config
 (custom-set-variables
@@ -214,10 +248,18 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(blink-cursor-mode nil)
+ '(column-number-mode t)
  '(custom-enabled-themes '(doom-one))
  '(custom-safe-themes
    '("02f57ef0a20b7f61adce51445b68b2a7e832648ce2e7efb19d217b6454c1b644" default))
- '(org-agenda-files '("~/Programming/Agenda.org")))
+ '(display-time-24hr-format t)
+ '(display-time-day-and-date t)
+ '(display-time-mode t)
+ '(menu-bar-mode nil)
+ '(org-agenda-files '("~/Programming/Agenda.org"))
+ '(size-indication-mode t)
+ '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
