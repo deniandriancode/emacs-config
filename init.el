@@ -7,11 +7,6 @@
 ;;(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
 
-(add-to-list 'default-frame-alist '(font . "Mononoki Nerd Font-10" ))
-
-(set-fontset-font "fontset-default" 'han "Noto Serif JP")
-(set-fontset-font "fontset-default" 'arabic "Arabic")
-
 (setq package-selected-packages
       '(neotree
 		all-the-icons
@@ -42,6 +37,15 @@
 		tree-sitter-langs
 		lsp-java))
 
+(add-to-list 'default-frame-alist '(font . "Mononoki Nerd Font-10" ))
+
+(set-fontset-font "fontset-default" 'han "Noto Serif JP")
+(set-fontset-font "fontset-default" 'arabic "Arabic")
+
+;; ==== Change this
+;; (add-to-list 'load-path "~/Programming/github/emacs-application-framework/")
+;; (require 'eaf)
+;; (require 'eaf-browser)
 
 (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
 (add-hook 'html-mode-hook 'emmet-mode)
@@ -67,7 +71,8 @@
   (previous-line (window-half-height)))
 
 (add-hook 'after-init-hook 'global-company-mode)
-(setq company-minimum-prefix-length 1)
+(setq company-minimum-prefix-length 1
+      company-idle-delay 0.0) ;; default is 0.2
 
 ;; (ivy-mode 1)
 (setq ivy-use-virtual-buffers t)
@@ -223,12 +228,10 @@
 (add-to-list 'auto-mode-alist '("\\.cl\\'" . common-lisp-mode))
 
 ;; ============ LSP
-(require 'lsp-mode)
+;; (require 'lsp-mode)
 
-(add-hook 'lsp-mode-hook #'lsp-headerline-breadcrumb-mode)
-
-(require 'lsp-java)
-(add-hook 'java-mode-hook #'lsp)
+;; (require 'lsp-java)
+;; (add-hook 'java-mode-hook #'lsp)
 
 ;; ============ Tree Sitter
 (global-tree-sitter-mode)
@@ -260,6 +263,7 @@
  '(display-time-day-and-date t)
  '(display-time-mode t)
  '(global-display-line-numbers-mode t)
+ '(lsp-headerline-breadcrumb-enable nil)
  '(menu-bar-mode nil)
  '(org-agenda-files '("~/Programming/Agenda.org"))
  '(size-indication-mode t)
