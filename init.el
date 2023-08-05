@@ -182,6 +182,8 @@
 (key-chord-mode 1)
 ;; (evil-mode 1)
 
+;; (set-cursor-color "MediumOrchid2")
+
 ;; (setq evil-emacs-state-cursor '("orange" box))
 ;; (setq evil-normal-state-cursor '(box "SteelBlue2")
       ;; evil-insert-state-cursor '(bar "SteelBlue2")
@@ -250,12 +252,14 @@
  ;; If there is more than one, they won't work right.
  '(blink-cursor-mode nil)
  '(column-number-mode t)
- '(custom-enabled-themes '(doom-one))
+ '(custom-enabled-themes '(spacemacs-dark))
  '(custom-safe-themes
-   '("02f57ef0a20b7f61adce51445b68b2a7e832648ce2e7efb19d217b6454c1b644" default))
+   '("7fd8b914e340283c189980cd1883dbdef67080ad1a3a9cc3df864ca53bdc89cf" "02f57ef0a20b7f61adce51445b68b2a7e832648ce2e7efb19d217b6454c1b644" default))
+ '(display-line-numbers-type 'relative)
  '(display-time-24hr-format t)
  '(display-time-day-and-date t)
  '(display-time-mode t)
+ '(global-display-line-numbers-mode t)
  '(menu-bar-mode nil)
  '(org-agenda-files '("~/Programming/Agenda.org"))
  '(size-indication-mode t)
@@ -265,5 +269,5 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(cursor ((t (:background "MediumOrchid2")))))
 (put 'scroll-left 'disabled nil)

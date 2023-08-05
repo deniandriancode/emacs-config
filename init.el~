@@ -25,6 +25,8 @@
 		typescript-mode
 		company
 		which-key
+		atom-one-dark-theme
+		spacemacs-theme
 		doom-themes
 		doom-modeline
 		angular-mode
@@ -35,6 +37,7 @@
 		key-chord
 		vertico
 		restart-emacs
+		centaur-tabs
 		tree-sitter
 		tree-sitter-langs
 		lsp-java))
@@ -163,8 +166,23 @@
 (global-set-key (kbd "C-c f") 'neotree-toggle)
 (global-set-key (kbd "C-c i") 'ivy-mode)
 
+;; ============ centaur tabs
+(require 'centaur-tabs)
+(centaur-tabs-mode t)
+(global-set-key (kbd "C-<prior>")  'centaur-tabs-backward)
+(global-set-key (kbd "C-<next>") 'centaur-tabs-forward)
+(centaur-tabs-headline-match)
+(setq centaur-tabs-style "bar")
+(setq centaur-tabs-set-icons t)
+(setq centaur-tabs-set-modified-marker t)
+(setq centaur-tabs-show-navigation-buttons t)
+(setq centaur-tabs-set-bar 'left)
+;; (setq x-underline-at-descent-line t)
+
 (key-chord-mode 1)
 ;; (evil-mode 1)
+
+;; (set-cursor-color "MediumOrchid2")
 
 ;; (setq evil-emacs-state-cursor '("orange" box))
 ;; (setq evil-normal-state-cursor '(box "SteelBlue2")
@@ -234,11 +252,14 @@
  ;; If there is more than one, they won't work right.
  '(blink-cursor-mode nil)
  '(column-number-mode t)
- '(custom-enabled-themes '(doom-one))
+ '(custom-enabled-themes '(spacemacs-dark))
  '(custom-safe-themes
-   '("02f57ef0a20b7f61adce51445b68b2a7e832648ce2e7efb19d217b6454c1b644" default))
+   '("7fd8b914e340283c189980cd1883dbdef67080ad1a3a9cc3df864ca53bdc89cf" "02f57ef0a20b7f61adce51445b68b2a7e832648ce2e7efb19d217b6454c1b644" default))
+ '(display-line-numbers-type 'relative)
  '(display-time-24hr-format t)
+ '(display-time-day-and-date t)
  '(display-time-mode t)
+ '(global-display-line-numbers-mode t)
  '(menu-bar-mode nil)
  '(org-agenda-files '("~/Programming/Agenda.org"))
  '(size-indication-mode t)
@@ -248,5 +269,5 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(cursor ((t (:background "MediumOrchid2")))))
 (put 'scroll-left 'disabled nil)
